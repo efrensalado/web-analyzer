@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador de Resultados - Web Analyzer Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .nav-btn {
+            padding: 0.75rem 1.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .main-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .upload-section {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .file-input-wrapper {
+            margin: 2rem 0;
+        }
+
+        .file-input {
+            width: 100%;
+            max-width: 400px;
+            padding: 1rem;
+            border: 2px dashed #667eea;
+            border-radius: 10px;
+            background: #f8fafc;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 auto;
+            display: block;
+        }
+
+        .file-input:hover {
+            border-color: #764ba2;
+            background: #f1f5f9;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #e5e7eb;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid #e5e7eb;
+            width: 100%;
+            min-height: 400px;
+        }
+
+        .chart-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .chart-canvas {
+            width: 100% !important;
+            height: 350px !important;
+        }
+
+        .chart-scroll-container {
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding-bottom: 10px;
+        }
+
+        .chart-scroll-container canvas {
+            min-width: 800px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            color: #6b7280;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f4f6;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: #fef2f2;
+            color: #dc2626;
+            padding: 1rem;
+            border-radius: 10px;
+            border: 1px solid #fecaca;
+            margin: 1rem 0;
+        }
+
+        .success-message {
+            background: #dcfce7;
+            color: #166534;
+            padding: 1rem;
+            border-radius: 10px;
+            border: 1px solid #bbf7d0;
+            margin: 1rem 0;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6b7280;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .btn-export {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .btn-export:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .chart-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #374151;
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .main-card {
+                padding: 1.5rem;
+            }
+            
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-chart-line"></i> Visualizador de Resultados</h1>
+            <p>Analiza y visualiza los resultados de tus análisis web</p>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="/" class="nav-btn">
+                <i class="fas fa-home"></i> Inicio
+            </a>
+            <a href="/visualizar" class="nav-btn">
+                <i class="fas fa-chart-line"></i> Visualizar
+            </a>
+        </div>
+
+        <div class="main-card">
+            <div class="upload-section">
+                <h3><i class="fas fa-upload"></i> Subir Resultados JSON</h3>
+                <p>Selecciona un archivo JSON con los resultados del análisis para generar gráficos</p>
+                
+                <div class="file-input-wrapper">
+                    <input type="file" id="jsonFile" accept=".json" class="file-input" />
+                </div>
+                
+                <button onclick="procesarArchivo()" class="btn btn-primary" id="processBtn">
+                    <i class="fas fa-chart-bar"></i> Generar Gráficos
+                </button>
+            </div>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Procesando datos...</p>
+            </div>
+
+            <div id="errorMessage"></div>
+            <div id="successMessage"></div>
+        </div>
+
+        <div class="main-card" id="resultsSection" style="display: none;">
+            <h3><i class="fas fa-chart-bar"></i> Análisis de Resultados</h3>
+            
+            <div class="stats-grid" id="statsGrid"></div>
+            
+            <div style="text-align: center; margin: 2rem 0;">
+                <button onclick="exportarTodosLosGraficos()" class="btn btn-primary">
+                    <i class="fas fa-download"></i> Exportar Todos los Gráficos
+                </button>
+            </div>
+            
+            <div class="charts-grid" id="chartsGrid"></div>
+        </div>
+
+        <div class="main-card" id="emptyState">
+            <div class="empty-state">
+                <i class="fas fa-chart-line"></i>
+                <h3>Listo para visualizar</h3>
+                <p>Sube un archivo JSON con los resultados del análisis para comenzar a generar gráficos y estadísticas.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let datosProcesados = null;
+
+        function procesarArchivo() {
+            const fileInput = document.getElementById('jsonFile');
+            const processBtn = document.getElementById('processBtn');
+            const loading = document.getElementById('loading');
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+            
+            if (fileInput.files.length === 0) {
+                mostrarError('Por favor selecciona un archivo JSON');
+                return;
+            }
+
+            // Mostrar estado de carga
+            processBtn.disabled = true;
+            processBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
+            loading.classList.add('show');
+            errorMessage.innerHTML = '';
+            successMessage.innerHTML = '';
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            fetch('/procesar-resultados', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                loading.classList.remove('show');
+                processBtn.disabled = false;
+                processBtn.innerHTML = '<i class="fas fa-chart-bar"></i> Generar Gráficos';
+
+                if (data.error) {
+                    mostrarError(data.error);
+                } else {
+                    datosProcesados = data;
+                    mostrarResultados(data);
+                    mostrarExito('Datos procesados exitosamente');
+                }
+            })
+            .catch(error => {
+                loading.classList.remove('show');
+                processBtn.disabled = false;
+                processBtn.innerHTML = '<i class="fas fa-chart-bar"></i> Generar Gráficos';
+                mostrarError('Error al procesar el archivo: ' + error.message);
+            });
+        }
+
+        function mostrarResultados(data) {
+            const resultsSection = document.getElementById('resultsSection');
+            const emptyState = document.getElementById('emptyState');
+            const statsGrid = document.getElementById('statsGrid');
+            const chartsGrid = document.getElementById('chartsGrid');
+
+            // Ocultar estado vacío y mostrar resultados
+            emptyState.style.display = 'none';
+            resultsSection.style.display = 'block';
+
+            // Mostrar estadísticas
+            if (data.estadisticas) {
+                let statsHTML = `
+                    <div class="stat-card">
+                        <div class="stat-number">${data.estadisticas.total_analisis}</div>
+                        <div class="stat-label">Total de análisis</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${data.estadisticas.promedio}ms</div>
+                        <div class="stat-label">Tiempo promedio</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${data.estadisticas.minimo}ms</div>
+                        <div class="stat-label">Tiempo mínimo</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${data.estadisticas.maximo}ms</div>
+                        <div class="stat-label">Tiempo máximo</div>
+                    </div>
+                `;
+                
+                // Agregar estadísticas de HTML si están disponibles
+                if (data.html_stats && data.html_stats.total_urls_html > 0) {
+                    statsHTML += `
+                        <div class="stat-card">
+                            <div class="stat-number">${data.html_stats.total_urls_html}</div>
+                            <div class="stat-label">URLs con datos HTML</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${data.html_stats.promedio_lineas}</div>
+                            <div class="stat-label">Promedio líneas HTML</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${data.html_stats.promedio_caracteres.toLocaleString()}</div>
+                            <div class="stat-label">Promedio caracteres HTML</div>
+                        </div>
+                    `;
+                }
+                
+                statsGrid.innerHTML = statsHTML;
+            }
+
+            // Crear gráficos
+            chartsGrid.innerHTML = '';
+            
+            // Gráfico de tiempo de respuesta
+            if (data.tiempos_respuesta && data.tiempos_respuesta.length > 0) {
+                const tiempoChart = crearGraficoTiempo(data.tiempos_respuesta, data.urls_analizadas);
+                chartsGrid.appendChild(tiempoChart);
+                
+                // Gráfico de histograma de tiempos
+                const histogramChart = crearGraficoHistograma(data.tiempos_respuesta);
+                chartsGrid.appendChild(histogramChart);
+            }
+
+            // Gráfico de líneas de código HTML
+            if (data.html_lines_data && data.html_lines_data.length > 0) {
+                const htmlLinesChart = crearGraficoLineasHTML(data.html_lines_data, data.urls_html_data);
+                chartsGrid.appendChild(htmlLinesChart);
+                
+                // Gráfico de caracteres HTML
+                const htmlCharsChart = crearGraficoCaracteresHTML(data.html_chars_data, data.urls_html_data);
+                chartsGrid.appendChild(htmlCharsChart);
+            }
+
+            // Gráfico de distribución de velocidades
+            if (data.distribucion_velocidad) {
+                const velocidadChart = crearGraficoVelocidad(data.distribucion_velocidad);
+                chartsGrid.appendChild(velocidadChart);
+            }
+
+            // Gráfico de distribución de tamaños
+            if (data.distribucion_tamanos) {
+                const tamanoChart = crearGraficoTamano(data.distribucion_tamanos);
+                chartsGrid.appendChild(tamanoChart);
+            }
+        }
+
+        function crearGraficoTiempo(tiempos, urls) {
+            const container = document.createElement('div');
+            container.className = 'chart-container';
+            
+            // Crear header con título y botón de exportación
+            const header = document.createElement('div');
+            header.className = 'chart-header';
+            
+            const title = document.createElement('h4');
+            title.className = 'chart-title';
+            title.textContent = 'Tiempo de Respuesta por URL';
+            header.appendChild(title);
+            
+            const exportBtn = document.createElement('button');
+            exportBtn.className = 'btn-export';
+            exportBtn.innerHTML = '<i class="fas fa-download"></i> Exportar PNG';
+            exportBtn.onclick = () => exportarGrafico('tiempoChart', 'tiempo-respuesta-urls');
+            header.appendChild(exportBtn);
+            
+            container.appendChild(header);
+            
+            // Crear contenedor con scroll
+            const scrollContainer = document.createElement('div');
+            scrollContainer.className = 'chart-scroll-container';
+            container.appendChild(scrollContainer);
+            
+            const canvas = document.createElement('canvas');
+            canvas.id = 'tiempoChart';
+            canvas.className = 'chart-canvas';
+            scrollContainer.appendChild(canvas);
+            
+            // Crear etiquetas más descriptivas para las URLs
+            const labels = urls.map((url, index) => {
+                // Extraer el dominio de la URL para hacer las etiquetas más legibles
+                try {
+                    const domain = new URL(url).hostname;
+                    return `${index + 1}. ${domain}`;
+                } catch {
+                    return `URL ${index + 1}`;
+                }
+            });
+            
+            // Crear gráfico
+            const ctx = canvas.getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Tiempo de respuesta (ms)',
+                        data: tiempos,
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        borderWidth: 3,
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
+                        pointBackgroundColor: '#667eea',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Análisis de Tiempo de Respuesta',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                title: function(context) {
+                                    return context[0].label;
+                                },
+                                label: function(context) {
+                                    const originalUrl = urls[context.dataIndex];
+                                    return [
+                                        `Tiempo: ${context.parsed.y}ms`,
+                                        `URL: ${originalUrl}`
+                                    ];
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Tiempo (ms)',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            },
+                            ticks: {
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'URLs Analizadas',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            },
+                            ticks: {
+                                display: false  // Ocultar completamente las etiquetas del eje X
+                            }
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    layout: {
+                        padding: {
+                            right: 20
+                        }
+                    }
+                }
+            });
+            
+            return container;
+        }
+
+        function crearGraficoVelocidad(distribucion) {
+            const container = document.createElement('div');
+            container.className = 'chart-container';
+            
+            // Crear header con título y botón de exportación
+            const header = document.createElement('div');
+            header.className = 'chart-header';
+            
+            const title = document.createElement('h4');
+            title.className = 'chart-title';
+            title.textContent = 'Distribución de Velocidades';
+            header.appendChild(title);
+            
+            const exportBtn = document.createElement('button');
+            exportBtn.className = 'btn-export';
+            exportBtn.innerHTML = '<i class="fas fa-download"></i> Exportar PNG';
+            exportBtn.onclick = () => exportarGrafico('velocidadChart', 'distribucion-velocidades');
+            header.appendChild(exportBtn);
+            
+            container.appendChild(header);
+            
+            const canvas = document.createElement('canvas');
+            canvas.id = 'velocidadChart';
+            canvas.className = 'chart-canvas';
+            container.appendChild(canvas);
+            
+            const ctx = canvas.getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(distribucion),
+                    datasets: [{
+                        data: Object.values(distribucion),
+                        backgroundColor: [
+                            '#10b981', // Verde para EXCELENTE
+                            '#3b82f6', // Azul para BUENO
+                            '#f59e0b', // Amarillo para REGULAR
+                            '#ef4444', // Rojo para LENTO
+                            '#8b5cf6'  // Púrpura para MUY LENTO
+                        ],
+                        borderWidth: 3,
+                        borderColor: '#ffffff',
+                        hoverBorderWidth: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: {
+                                    size: 14
+                                },
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Clasificación de Velocidades',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                    return `${context.label}: ${context.parsed} URLs (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            return container;
+        }
+
+        function crearGraficoTamano(distribucion) {
+            const container = document.createElement('div');
+            container.className = 'chart-container';
+            
+            // Crear header con título y botón de exportación
+            const header = document.createElement('div');
+            header.className = 'chart-header';
+            
+            const title = document.createElement('h4');
+            title.className = 'chart-title';
+            title.textContent = 'Distribución de Tamaños';
+            header.appendChild(title);
+            
+            const exportBtn = document.createElement('button');
+            exportBtn.className = 'btn-export';
+            exportBtn.innerHTML = '<i class="fas fa-download"></i> Exportar PNG';
+            exportBtn.onclick = () => exportarGrafico('tamanoChart', 'distribucion-tamanos');
+            header.appendChild(exportBtn);
+            
+            container.appendChild(header);
+            
+            const canvas = document.createElement('canvas');
+            canvas.id = 'tamanoChart';
+            canvas.className = 'chart-canvas';
+            container.appendChild(canvas);
+            
+            const ctx = canvas.getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(distribucion),
+                    datasets: [{
+                        label: 'Cantidad de URLs',
+                        data: Object.values(distribucion),
+                        backgroundColor: [
+                            '#10b981', // Verde para 0-100 KB
+                            '#3b82f6', // Azul para 100-500 KB
+                            '#f59e0b', // Amarillo para 500-1000 KB
+                            '#ef4444'  // Rojo para 1000+ KB
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff',
+                        borderRadius: 8,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Tamaño de Contenido por Rango',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Cantidad de URLs',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            },
+                            ticks: {
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Rango de Tamaño',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            },
+                            ticks: {
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            return container;
+        }
+
+        function crearGraficoHistograma(tiempos) {
+            const container = document.createElement('div');
+            container.className = 'chart-container';
+            
+            // Crear header con título y botón de exportación
+            const header = document.createElement('div');
+            header.className = 'chart-header';
+            
+            const title = document.createElement('h4');
+            title.className = 'chart-title';
+            title.textContent = 'Distribución de Tiempos de Respuesta';
+            header.appendChild(title);
+            
+            const exportBtn = document.createElement('button');
+            exportBtn.className = 'btn-export';
+            exportBtn.innerHTML = '<i class="fas fa-download"></i> Exportar PNG';
+            exportBtn.onclick = () => exportarGrafico('histogramChart', 'histograma-tiempos-respuesta');
+            header.appendChild(exportBtn);
+            
+            container.appendChild(header);
+            
+            const canvas = document.createElement('canvas');
+            canvas.id = 'histogramChart';
+            canvas.className = 'chart-canvas';
+            container.appendChild(canvas);
+            
+            // Crear rangos para el histograma
+            const max = Math.max(...tiempos);
+            const min = Math.min(...tiempos);
+            const range = max - min;
+            const binCount = Math.min(10, Math.ceil(Math.sqrt(tiempos.length)));
+            const binSize = range / binCount;
+            
+            const bins = new Array(binCount).fill(0);
+            const binLabels = [];
+            
+            for (let i = 0; i < binCount; i++) {
+                const start = min + (i * binSize);
+                const end = min + ((i + 1) * binSize);
+                binLabels.push(`${Math.round(start)}-${Math.round(end)}ms`);
+            }
+            
+            // Contar valores en cada bin
+            tiempos.forEach(tiempo => {
+                const binIndex = Math.min(Math.floor((tiempo - min) / binSize), binCount - 1);
+                bins[binIndex]++;
+            });
+            
+            const ctx = canvas.getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: binLabels,
+                    datasets: [{
+                        label: 'Frecuencia',
+                        data: bins,
+                        backgroundColor: 'rgba(102, 126, 234, 0.8)',
+                        borderColor: '#667eea',
+                        borderWidth: 2,
+                        borderRadius: 4,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Histograma de Tiempos de Respuesta',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Frecuencia',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            },
+                            ticks: {
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Rango de Tiempo (ms)',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            },
+                            ticks: {
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            return container;
+        }
+
+        function crearGraficoLineasHTML(lineas, urls) {
+            const container = document.createElement('div');
+            container.className = 'chart-container';
+            
+            // Crear header con título y botón de exportación
+            const header = document.createElement('div');
+            header.className = 'chart-header';
+            
+            const title = document.createElement('h4');
+            title.className = 'chart-title';
+            title.textContent = 'Líneas de Código HTML por URL';
+            header.appendChild(title);
+            
+            const exportBtn = document.createElement('button');
+            exportBtn.className = 'btn-export';
+            exportBtn.innerHTML = '<i class="fas fa-download"></i> Exportar PNG';
+            exportBtn.onclick = () => exportarGrafico('htmlLinesChart', 'lineas-codigo-html');
+            header.appendChild(exportBtn);
+            
+            container.appendChild(header);
+            
+            const canvas = document.createElement('canvas');
+            canvas.id = 'htmlLinesChart';
+            canvas.className = 'chart-canvas';
+            container.appendChild(canvas);
+            
+            // Crear etiquetas más descriptivas para las URLs
+            const labels = urls.map((url, index) => {
+                try {
+                    const domain = new URL(url).hostname;
+                    return `${index + 1}. ${domain}`;
+                } catch {
+                    return `URL ${index + 1}`;
+                }
+            });
+            
+            const ctx = canvas.getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Líneas de código HTML',
+                        data: lineas,
+                        backgroundColor: 'rgba(16, 185, 129, 0.8)',
+                        borderColor: '#10b981',
+                        borderWidth: 2,
+                        borderRadius: 4,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Análisis de Líneas de Código HTML',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                title: function(context) {
+                                    return context[0].label;
+                                },
+                                label: function(context) {
+                                    const originalUrl = urls[context.dataIndex];
+                                    return [
+                                        `Líneas: ${context.parsed.y}`,
+                                        `URL: ${originalUrl}`
+                                    ];
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Líneas de código',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            },
+                            ticks: {
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'URLs Analizadas',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            },
+                            ticks: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+            
+            return container;
+        }
+
+        function crearGraficoCaracteresHTML(caracteres, urls) {
+            const container = document.createElement('div');
+            container.className = 'chart-container';
+            
+            // Crear header con título y botón de exportación
+            const header = document.createElement('div');
+            header.className = 'chart-header';
+            
+            const title = document.createElement('h4');
+            title.className = 'chart-title';
+            title.textContent = 'Caracteres HTML por URL';
+            header.appendChild(title);
+            
+            const exportBtn = document.createElement('button');
+            exportBtn.className = 'btn-export';
+            exportBtn.innerHTML = '<i class="fas fa-download"></i> Exportar PNG';
+            exportBtn.onclick = () => exportarGrafico('htmlCharsChart', 'caracteres-html');
+            header.appendChild(exportBtn);
+            
+            container.appendChild(header);
+            
+            const canvas = document.createElement('canvas');
+            canvas.id = 'htmlCharsChart';
+            canvas.className = 'chart-canvas';
+            container.appendChild(canvas);
+            
+            // Crear etiquetas más descriptivas para las URLs
+            const labels = urls.map((url, index) => {
+                try {
+                    const domain = new URL(url).hostname;
+                    return `${index + 1}. ${domain}`;
+                } catch {
+                    return `URL ${index + 1}`;
+                }
+            });
+            
+            const ctx = canvas.getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Caracteres HTML',
+                        data: caracteres,
+                        backgroundColor: 'rgba(139, 92, 246, 0.8)',
+                        borderColor: '#8b5cf6',
+                        borderWidth: 2,
+                        borderRadius: 4,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Análisis de Caracteres HTML',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                title: function(context) {
+                                    return context[0].label;
+                                },
+                                label: function(context) {
+                                    const originalUrl = urls[context.dataIndex];
+                                    return [
+                                        `Caracteres: ${context.parsed.y.toLocaleString()}`,
+                                        `URL: ${originalUrl}`
+                                    ];
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Caracteres',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            },
+                            ticks: {
+                                font: {
+                                    size: 12
+                                },
+                                callback: function(value) {
+                                    return value.toLocaleString();
+                                }
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'URLs Analizadas',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            },
+                            ticks: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+            
+            return container;
+        }
+
+        function exportarGrafico(canvasId, nombreArchivo) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) {
+                mostrarError('No se encontró el gráfico para exportar');
+                return;
+            }
+
+            try {
+                // Crear un enlace temporal para descargar
+                const link = document.createElement('a');
+                link.download = `${nombreArchivo}-${new Date().toISOString().slice(0, 10)}.png`;
+                link.href = canvas.toDataURL('image/png');
+                
+                // Simular clic para descargar
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                mostrarExito('Gráfico exportado exitosamente');
+            } catch (error) {
+                mostrarError('Error al exportar el gráfico: ' + error.message);
+            }
+        }
+
+        function exportarTodosLosGraficos() {
+            const chartsGrid = document.getElementById('chartsGrid');
+            const charts = chartsGrid.children;
+            const successMessages = [];
+            const errorMessages = [];
+
+            for (let i = 0; i < charts.length; i++) {
+                const chartContainer = charts[i];
+                const chartTitle = chartContainer.querySelector('.chart-title').textContent;
+                const exportBtn = chartContainer.querySelector('.btn-export');
+
+                if (exportBtn) {
+                    try {
+                        const canvas = chartContainer.querySelector('.chart-canvas');
+                        if (canvas) {
+                            const link = document.createElement('a');
+                            link.download = `${chartTitle.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}-${new Date().toISOString().slice(0, 10)}.png`;
+                            link.href = canvas.toDataURL('image/png');
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                            successMessages.push(`Gráfico "${chartTitle}" exportado exitosamente.`);
+                        } else {
+                            errorMessages.push(`No se pudo encontrar el canvas para el gráfico "${chartTitle}".`);
+                        }
+                    } catch (error) {
+                        errorMessages.push(`Error al exportar el gráfico "${chartTitle}": ${error.message}`);
+                    }
+                }
+            }
+
+            if (successMessages.length > 0) {
+                mostrarExito(`Exportación de gráficos completada. ${successMessages.length} gráficos exportados.`);
+                if (errorMessages.length > 0) {
+                    mostrarError(`Algunos gráficos no pudieron ser exportados: ${errorMessages.join(' ')}`);
+                }
+            } else {
+                mostrarError('No se encontraron gráficos para exportar.');
+            }
+        }
+
+        function mostrarError(mensaje) {
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.innerHTML = `<div class="error-message"><i class="fas fa-exclamation-triangle"></i> ${mensaje}</div>`;
+        }
+
+        function mostrarExito(mensaje) {
+            const successMessage = document.getElementById('successMessage');
+            successMessage.innerHTML = `<div class="success-message"><i class="fas fa-check-circle"></i> ${mensaje}</div>`;
+        }
+    </script>
+</body>
+
+</html> 
