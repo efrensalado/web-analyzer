@@ -1,6 +1,6 @@
 # 🌐 Web Analyzer
 
-Un analizador web profesional que proporciona métricas avanzadas de rendimiento, SEO, seguridad y accesibilidad para sitios web.
+Un analizador web que proporciona métricas avanzadas de rendimiento, SEO, seguridad y accesibilidad para sitios web.
 
 ## 📋 Tabla de Contenidos
 
@@ -28,7 +28,7 @@ Un analizador web profesional que proporciona métricas avanzadas de rendimiento
 - **Exportación PNG**: Todos los gráficos exportables
 - **Estadísticas en Tiempo Real**: Métricas agregadas y promedios
 
-### 🎨 Interfaz Profesional
+### 🎨 Interfaz Intuitiva
 - **Diseño Responsivo**: Funciona en desktop, tablet y móvil
 - **Cards Desplegables**: Información organizada y accesible
 - **Scroll Horizontal**: Para múltiples repeticiones
@@ -363,4 +363,4 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más det
 
 ---
 
-**Web Analyzer Pro** - Análisis web profesional y visualización avanzada de métricas de rendimiento, SEO, seguridad y accesibilidad. 
+**Web Analyzer Pro** - Análisis web y visualización avanzada de métricas de rendimiento, SEO, seguridad y accesibilidad. 
