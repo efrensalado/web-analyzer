@@ -363,4 +363,4 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más det
 
 ---
 
-**Web Analyzer Pro** - Análisis web y visualización avanzada de métricas de rendimiento, SEO, seguridad y accesibilidad. 
+**Web Analyzer** - Análisis web y visualización avanzada de métricas de rendimiento, SEO, seguridad y accesibilidad. 
