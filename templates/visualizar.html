@@ -17,7 +17,7 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #08415C 0%, #6B818C 100%);
             min-height: 100vh;
             color: #333;
             line-height: 1.6;
@@ -48,38 +48,86 @@
             font-weight: 300;
         }
 
-        .nav-buttons {
+        .main-nav {
+            background: linear-gradient(135deg, #08415C 0%, #CC2936 100%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
             display: flex;
-            gap: 1rem;
-            justify-content: center;
-            margin-bottom: 2rem;
-        }
-
-        .nav-btn {
-            padding: 0.75rem 1.5rem;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: inline-flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 0.5rem;
+            height: 70px;
         }
 
-        .nav-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .nav-brand i {
+            font-size: 1.8rem;
+            color: #F1BF98;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 0;
+            align-items: center;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-item:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .nav-item.active {
+            color: white;
+            background: #CC2936;
+            box-shadow: 0 4px 15px rgba(204, 41, 54, 0.3);
+        }
+
+        .nav-item i {
+            font-size: 1.1rem;
+        }
+
+        .nav-item span {
+            font-size: 0.95rem;
         }
 
         .main-card {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
             padding: 2.5rem;
             margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .upload-section {
@@ -94,14 +142,15 @@
         .file-input {
             width: 100%;
             max-width: 400px;
-            padding: 1rem;
-            border: 2px dashed #667eea;
-            border-radius: 10px;
-            background: #f8fafc;
+            padding: 0.875rem 1rem;
+            border: 1.5px dashed #CC2936;
+            border-radius: 8px;
+            background: #fafbfc;
             cursor: pointer;
             transition: all 0.3s ease;
             margin: 0 auto;
             display: block;
+            color: #374151;
         }
 
         .file-input:hover {
@@ -110,9 +159,9 @@
         }
 
         .btn {
-            padding: 0.75rem 1.5rem;
+            padding: 0.875rem 1.75rem;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
@@ -121,16 +170,17 @@
             align-items: center;
             gap: 0.5rem;
             text-decoration: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #CC2936 0%, #08415C 100%);
             color: white;
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 10px 20px rgba(204, 41, 54, 0.3);
         }
 
         .btn:disabled {
@@ -147,17 +197,18 @@
         }
 
         .stat-card {
-            background: #f8fafc;
+            background: #fafbfc;
             padding: 1.5rem;
-            border-radius: 10px;
+            border-radius: 8px;
             text-align: center;
             border: 1px solid #e5e7eb;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
         }
 
         .stat-number {
             font-size: 2rem;
             font-weight: 700;
-            color: #667eea;
+            color: #CC2936;
             margin-bottom: 0.5rem;
         }
 
@@ -177,8 +228,8 @@
         .chart-container {
             background: white;
             padding: 1.5rem;
-            border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
             border: 1px solid #e5e7eb;
             width: 100%;
             min-height: 400px;
@@ -316,29 +367,63 @@
                 grid-template-columns: 1fr;
             }
             
-            .nav-buttons {
-                flex-direction: column;
-                align-items: center;
+            .nav-container {
+                padding: 0 1rem;
+                height: 60px;
+            }
+            
+            .nav-brand {
+                font-size: 1.2rem;
+            }
+            
+            .nav-brand i {
+                font-size: 1.5rem;
+            }
+            
+            .nav-menu {
+                gap: 5px;
+            }
+            
+            .nav-item {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
+            
+            .nav-item span {
+                display: none;
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <div class="header">
-            <h1><i class="fas fa-chart-line"></i> Visualizador de Resultados</h1>
-            <p>Analiza y visualiza los resultados de tus análisis web</p>
-        </div>
+                <nav class="main-nav">
+                <div class="nav-container">
+                    <div class="nav-brand">
+                        <i class="fas fa-globe"></i>
+                        <span>Web Analyzer</span>
+                    </div>
+                    <div class="nav-menu">
+                        <a href="/" class="nav-item">
+                            <i class="fas fa-home"></i>
+                            <span>Inicio</span>
+                        </a>
+                        <a href="/visualizar" class="nav-item active">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Visualización</span>
+                        </a>
+                        <a href="/tiempo-respuesta" class="nav-item">
+                            <i class="fas fa-clock"></i>
+                            <span>Tiempo de Respuesta</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
 
-        <div class="nav-buttons">
-            <a href="/" class="nav-btn">
-                <i class="fas fa-home"></i> Inicio
-            </a>
-            <a href="/visualizar" class="nav-btn">
-                <i class="fas fa-chart-line"></i> Visualizar
-            </a>
-        </div>
+            <div class="header">
+                <h1><i class="fas fa-chart-line"></i> Visualizador de Resultados</h1>
+                <p>Analiza y visualiza los resultados de tus análisis web</p>
+            </div>
 
         <div class="main-card">
             <div class="upload-section">
@@ -371,6 +456,9 @@
             <div style="text-align: center; margin: 2rem 0;">
                 <button onclick="exportarTodosLosGraficos()" class="btn btn-primary">
                     <i class="fas fa-download"></i> Exportar Todos los Gráficos
+                </button>
+                <button onclick="abrirVistaTiempoRespuesta()" class="btn btn-info" style="margin-left: 10px;">
+                    <i class="fas fa-clock"></i> Análisis Detallado de Tiempo de Respuesta
                 </button>
             </div>
             
@@ -446,6 +534,9 @@
             // Ocultar estado vacío y mostrar resultados
             emptyState.style.display = 'none';
             resultsSection.style.display = 'block';
+            
+            // Guardar datos completos para uso posterior
+            window.datosCompletos = data;
 
             // Mostrar estadísticas
             if (data.estadisticas) {
@@ -576,14 +667,14 @@
                     datasets: [{
                         label: 'Tiempo de respuesta (ms)',
                         data: tiempos,
-                        borderColor: '#667eea',
-                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        borderColor: '#CC2936',
+                        backgroundColor: 'rgba(204, 41, 54, 0.1)',
                         tension: 0.4,
                         fill: true,
                         borderWidth: 3,
                         pointRadius: 6,
                         pointHoverRadius: 8,
-                        pointBackgroundColor: '#667eea',
+                        pointBackgroundColor: '#CC2936',
                         pointBorderColor: '#ffffff',
                         pointBorderWidth: 2
                     }]
@@ -666,6 +757,41 @@
                 }
             });
             
+            // Agregar enlace para vista detallada
+            const enlaceDetalle = document.createElement('div');
+            enlaceDetalle.className = 'chart-detail-link';
+            enlaceDetalle.style.cssText = `
+                text-align: center;
+                margin-top: 15px;
+                padding: 10px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                border-radius: 10px;
+                color: white;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                font-weight: 600;
+            `;
+            enlaceDetalle.innerHTML = '<i class="fas fa-external-link-alt"></i> Ver Análisis Detallado de Tiempo de Respuesta';
+            enlaceDetalle.onclick = () => {
+                // Guardar datos en sessionStorage para pasarlos a la otra vista
+                const datosTiempoRespuesta = {
+                    tiempos: tiempos,
+                    urls: urls
+                };
+                sessionStorage.setItem('datosTiempoRespuesta', JSON.stringify(datosTiempoRespuesta));
+                window.open('/tiempo-respuesta', '_blank');
+            };
+            enlaceDetalle.onmouseover = () => {
+                enlaceDetalle.style.transform = 'translateY(-2px)';
+                enlaceDetalle.style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.4)';
+            };
+            enlaceDetalle.onmouseout = () => {
+                enlaceDetalle.style.transform = 'translateY(0)';
+                enlaceDetalle.style.boxShadow = 'none';
+            };
+            
+            container.appendChild(enlaceDetalle);
+            
             return container;
         }
 
@@ -703,11 +829,11 @@
                     datasets: [{
                         data: Object.values(distribucion),
                         backgroundColor: [
-                            '#10b981', // Verde para EXCELENTE
-                            '#3b82f6', // Azul para BUENO
-                            '#f59e0b', // Amarillo para REGULAR
-                            '#ef4444', // Rojo para LENTO
-                            '#8b5cf6'  // Púrpura para MUY LENTO
+                            '#08415C', // Azul marino para EXCELENTE
+                            '#6B818C', // Gris azulado para BUENO
+                            '#F1BF98', // Beige para REGULAR
+                            '#CC2936', // Rojo coral para LENTO
+                            '#EEE5E9'  // Gris claro para MUY LENTO
                         ],
                         borderWidth: 3,
                         borderColor: '#ffffff',
@@ -787,10 +913,10 @@
                         label: 'Cantidad de URLs',
                         data: Object.values(distribucion),
                         backgroundColor: [
-                            '#10b981', // Verde para 0-100 KB
-                            '#3b82f6', // Azul para 100-500 KB
-                            '#f59e0b', // Amarillo para 500-1000 KB
-                            '#ef4444'  // Rojo para 1000+ KB
+                            '#08415C', // Azul marino para 0-100 KB
+                            '#6B818C', // Gris azulado para 100-500 KB
+                            '#F1BF98', // Beige para 500-1000 KB
+                            '#CC2936'  // Rojo coral para 1000+ KB
                         ],
                         borderWidth: 2,
                         borderColor: '#ffffff',
@@ -1025,8 +1151,8 @@
                     datasets: [{
                         label: 'Líneas de código HTML',
                         data: lineas,
-                        backgroundColor: 'rgba(16, 185, 129, 0.8)',
-                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(204, 41, 54, 0.8)',
+                        borderColor: '#CC2936',
                         borderWidth: 2,
                         borderRadius: 4,
                         borderSkipped: false
@@ -1148,8 +1274,8 @@
                     datasets: [{
                         label: 'Caracteres HTML',
                         data: caracteres,
-                        backgroundColor: 'rgba(139, 92, 246, 0.8)',
-                        borderColor: '#8b5cf6',
+                        backgroundColor: 'rgba(241, 191, 152, 0.8)',
+                        borderColor: '#F1BF98',
                         borderWidth: 2,
                         borderRadius: 4,
                         borderSkipped: false
@@ -1303,6 +1429,17 @@
         function mostrarExito(mensaje) {
             const successMessage = document.getElementById('successMessage');
             successMessage.innerHTML = `<div class="success-message"><i class="fas fa-check-circle"></i> ${mensaje}</div>`;
+        }
+
+        function abrirVistaTiempoRespuesta() {
+            if (window.datosCompletos) {
+                // Guardar datos completos en sessionStorage
+                sessionStorage.setItem('datosCompletos', JSON.stringify(window.datosCompletos));
+                // Abrir la vista de tiempo de respuesta en una nueva pestaña
+                window.open('/tiempo-respuesta', '_blank');
+            } else {
+                alert('No hay datos disponibles para analizar. Por favor, sube un archivo JSON primero.');
+            }
         }
     </script>
 </body>

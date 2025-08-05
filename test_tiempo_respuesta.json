@@ -1,0 +1,104 @@
+{
+  "resultados": {
+    "https://www.google.com": [
+      {
+        "load_time_ms": 245,
+        "status": 200,
+        "size_kb": 45.2,
+        "speed_rating": "RÁPIDO"
+      },
+      {
+        "load_time_ms": 312,
+        "status": 200,
+        "size_kb": 45.8,
+        "speed_rating": "RÁPIDO"
+      },
+      {
+        "load_time_ms": 198,
+        "status": 200,
+        "size_kb": 44.9,
+        "speed_rating": "RÁPIDO"
+      }
+    ],
+    "https://www.github.com": [
+      {
+        "load_time_ms": 892,
+        "status": 200,
+        "size_kb": 156.7,
+        "speed_rating": "BUENO"
+      },
+      {
+        "load_time_ms": 945,
+        "status": 200,
+        "size_kb": 158.2,
+        "speed_rating": "BUENO"
+      },
+      {
+        "load_time_ms": 823,
+        "status": 200,
+        "size_kb": 155.1,
+        "speed_rating": "BUENO"
+      }
+    ],
+    "https://www.stackoverflow.com": [
+      {
+        "load_time_ms": 1245,
+        "status": 200,
+        "size_kb": 234.5,
+        "speed_rating": "REGULAR"
+      },
+      {
+        "load_time_ms": 1187,
+        "status": 200,
+        "size_kb": 232.8,
+        "speed_rating": "REGULAR"
+      },
+      {
+        "load_time_ms": 1321,
+        "status": 200,
+        "size_kb": 236.1,
+        "speed_rating": "REGULAR"
+      }
+    ],
+    "https://www.reddit.com": [
+      {
+        "load_time_ms": 2156,
+        "status": 200,
+        "size_kb": 456.3,
+        "speed_rating": "LENTO"
+      },
+      {
+        "load_time_ms": 2234,
+        "status": 200,
+        "size_kb": 458.7,
+        "speed_rating": "LENTO"
+      },
+      {
+        "load_time_ms": 2089,
+        "status": 200,
+        "size_kb": 454.2,
+        "speed_rating": "LENTO"
+      }
+    ],
+    "https://www.youtube.com": [
+      {
+        "load_time_ms": 3456,
+        "status": 200,
+        "size_kb": 789.2,
+        "speed_rating": "MUY LENTO"
+      },
+      {
+        "load_time_ms": 3567,
+        "status": 200,
+        "size_kb": 792.1,
+        "speed_rating": "MUY LENTO"
+      },
+      {
+        "load_time_ms": 3321,
+        "status": 200,
+        "size_kb": 786.8,
+        "speed_rating": "MUY LENTO"
+      }
+    ]
+  }
+} 

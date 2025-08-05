@@ -63,6 +63,10 @@ def progreso(task_id):
 def visualizar():
     return render_template('visualizar.html')
 
+@app.route('/tiempo-respuesta')
+def tiempo_respuesta():
+    return render_template('tiempo_respuesta.html')
+
 @app.route('/procesar-resultados', methods=['POST'])
 def procesar_resultados():
     try:
@@ -87,6 +91,32 @@ def procesar_resultados():
         return jsonify({'error': 'Archivo JSON inválido'}), 400
     except Exception as e:
         return jsonify({'error': f'Error procesando archivo: {str(e)}'}), 500
+
+@app.route('/procesar-tiempo-respuesta', methods=['POST'])
+def procesar_tiempo_respuesta():
+    try:
+        data = request.get_json()
+        
+        if not data or 'resultados' not in data:
+            return jsonify({'success': False, 'error': 'Datos inválidos'})
+        
+        # Extraer solo los datos de tiempo de respuesta
+        tiempo_respuesta_data = []
+        
+        for url, resultados in data['resultados'].items():
+            for resultado in resultados:
+                tiempo_respuesta_data.append({
+                    'url': url,
+                    'tiempo_respuesta': resultado.get('load_time_ms', 0)
+                })
+        
+        return jsonify({
+            'success': True,
+            'data': tiempo_respuesta_data
+        })
+        
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
 
 def procesar_datos_para_graficos(data):
     """Procesa los datos JSON para generar información para gráficos"""
